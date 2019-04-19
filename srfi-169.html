@@ -33,7 +33,7 @@
     <h1>Abstract</h1>
 
     <p>Many people find that large numbers are easier to read when the
-      digits are broken into small groups.  For example the number
+      digits are broken into small groups.  For example, the number
       <code>1582439</code> might be easier to read if written as <code>1
       582 439</code>.  This applies to source code as it does to other
       writing.  We propose an extension of Scheme syntax to allow the
@@ -49,11 +49,11 @@
       fourteen lakh fifteen thousand nine hundred and twenty-six</em> in
       Indian English).</p>
 
-    <p>For simplicity and universality we propose that digit groups of
-      all sizes may be mixed freely when writing a number.  It is
+    <p>For simplicity and universality, we propose that digit groups
+      of all sizes may be mixed freely when writing a number.  It is
       permissible to have just one digit in a group, and groups in a
-      number don’t need to be ordered by increasing or decreasing digit
-      count.</p>
+      number don’t need to be ordered by increasing or decreasing
+      digit count.</p>
 
     <h2>What separator character to use</h2>
 
@@ -75,8 +75,8 @@
 	splicing behavior in a confusing way.</p></li>
 
       <li><p>C++ uses an apostrophe which is somewhat exotic and may
-	call to mind units of measure (i.e. feet and inches).  Scheme
-	also uses the apostrophe for quotation: e.g. <code>'(1'2)</code>
+	call to mind units of measure, e.g. feet and inches.  Scheme
+	also uses the apostrophe for quotation, e.g. <code>'(1'2)</code>
 	evaluates to <code>(1 (quote 2))</code>.  Allowing apostrophes
 	in numbers would change the meaning of this syntax.</p></li>
 
@@ -92,7 +92,7 @@
 	they have a radix or exactness prefix.</p></li>
     </ul>
 
-    <p>In light of the above we consider the underscore to be the
+    <p>In light of the above, we consider the underscore to be the
       clear winner.  It is the most widely compatible and least
       ambiguous choice, in both human and machine terms.</p>
 
@@ -112,26 +112,26 @@
     <p>Countless languages outside the Lisp family use the underscores
       as word separators in multi-word identifiers – i.e. Scheme’s
       <code>open-input-file</code> would be spelled
-      <code>open_input_file</code> instead.  In these languages it’s
-      common to use a leading underscore to mark private (as opposed to
-      public or exported) identifiers.  This leads to potential
+      <code>open_input_file</code> instead.  In these languages, it’s
+      common to use a leading underscore to mark private (as opposed
+      to public or exported) identifiers.  This leads to potential
       ambiguity with identifiers such as <code>_123</code> that start
       with an underscore and contain only underscores and digits.  Those
       tokens often parse as identifiers.  If we made them parse as
-      numbers in Scheme instead it could confuse users.</p>
+      numbers in Scheme instead, it could confuse users.</p>
 
     <p>Scheme supports a rich numeric tower of integers, ratios, real
       and complex numbers.  These come in exact and inexact variants.
-      For real numbers we have decimal-point and exponent notation.
+      For real numbers, we have decimal-point and exponent notation.
       Particular implementations add quaternions and units of measure
       to the mix.  Common Lisp’s <em>potential numbers</em> offer a
       glimpse of how far numerical syntax can go.  These intricate
       extensions, some of which we cannot even anticipate yet, make it
-      even trickier for us to specify a digit separation scheme devoid
+      even trickier for us to specify a digit-separation scheme devoid
       of ambiguity.</p>
 
     <p>We attempt to solve these problems with a conservative rule
-      that allows an underscores only <em>between</em> digits.  After
+      that allows underscores only <em>between</em> digits.  After
       considering everything in the above paragraph, we did not manage
       to come up with any concrete examples of present or future tasks
       that would be impeded by this restricted version of the syntax
