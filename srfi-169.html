@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>SRFI 169: Underscores in Numbers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/srfi.css" type="text/css" />
+    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png" />
+  </head>
+  <body>
+    <h1>Title</h1>
+    <p>SRFI 169: Underscores in Numbers</p>
+    <h1>Author</h1>
+    <p>Lassi Kortela</p>
+    <h1>Status</h1>
+
+    <p>This SRFI is currently in <em>draft</em> status.  Here is
+      <a href="https://srfi.schemers.org/srfi-process.html">an
+	explanation</a> of each status that a SRFI can hold.  To
+      provide input on this SRFI, please send email to
+      <code><a href="mailto:srfi+minus+169+at+srfi+dotschemers+dot+org">srfi-169@<span class="antispam">nospam</span>srfi.schemers.org</a></code>.
+      To subscribe to the list, follow
+      <a href="https://srfi.schemers.org/srfi-list-subscribe.html">these
+	instructions</a>.  You can access previous messages via the
+      mailing list <a href="https://srfi-email.schemers.org/srfi-169">archive</a>.</p>
+
+    <ul>
+      <li>Received: 2019/4/16</li>
+      <li>60-day deadline: 2019/6/17</li>
+      <li>Draft #1 published: 2019/4/18</li>
+    </ul>
+
+    <h1>Abstract</h1>
+
+    <p>Many people find that large numbers are easier to read when the
+      digits are broken into small groups.  For example the number
+      <code>1582439</code> might be easier to read if written as <code>1
+      582 439</code>.  This applies to source code as it does to other
+      writing.  We propose an extension of Scheme syntax to allow the
+      underscore as a digit separator in numerical constants.</p>
+
+    <h1>Rationale</h1>
+
+    <h2>How many digits per group</h2>
+
+    <p>Western cultures tend to divide digits into groups of three.
+      This convention is not universal.  For example, in India people
+      write numbers like <code>3 14 15 926</code> (read <em>three crore
+      fourteen lakh fifteen thousand nine hundred and twenty-six</em> in
+      Indian English).</p>
+
+    <p>For simplicity and universality we propose that digit groups of
+      all sizes may be mixed freely when writing a number.  It is
+      permissible to have just one digit in a group, and groups in a
+      number don’t need to be ordered by increasing or decreasing digit
+      count.</p>
+
+    <h2>What separator character to use</h2>
+
+    <p>Human cultures and programming languages differ in what separator to use between groups.</p>
+
+    <ul>
+      <li><p>The examples in this document so far have used a space.
+	This is familiar to humans but not a good fit for most
+	programming languages since whitespace has a prominent role as
+	token separator.  Scheme is no exception here.</p></li>
+
+      <li><p>The next natural alternative is to use a comma or a
+	period.  This is likely to cause confusion in an international
+	community since countries that a use comma as the decimal
+	separator are as numerous as those that use a period.  More
+	trouble comes from Scheme using the comma to splice things into
+	a quasiquoted list: e.g.  <code>`(1,2)</code> evaluates to
+	<code>(1 2)</code>.  Allowing commas in numbers would change
+	splicing behavior in a confusing way.</p></li>
+
+      <li><p>C++ uses an apostrophe which is somewhat exotic and may
+	call to mind units of measure (i.e. feet and inches).  Scheme
+	also uses the apostrophe for quotation: e.g. <code>'(1'2)</code>
+	evaluates to <code>(1 (quote 2))</code>.  Allowing apostrophes
+	in numbers would change the meaning of this syntax.</p></li>
+
+      <li><p>The most popular digit group separator among programming
+	languages is the underscore.  It is in the standard syntax of
+	Ada, C#, Clojure, Eiffel, Frink, Java, Julia, Kotlin, OCaml,
+	Perl, Python, Ruby, Rust and Swift.  It is also being added to
+	JavaScript and is a common syntax extension in implementations
+	of Standard ML.  The Common Lisp standard permits it under the
+	umbrella of <em>potential numbers</em> but we are not aware of
+	implementations that use the opportunity.  Of Scheme
+	implementations, Gauche can read numbers with underscores when
+	they have a radix or exactness prefix.</p></li>
+    </ul>
+
+    <p>In light of the above we consider the underscore to be the
+      clear winner.  It is the most widely compatible and least
+      ambiguous choice, in both human and machine terms.</p>
+
+    <h2>Potential ambiguity between numbers and identifiers</h2>
+
+    <p>Languages in the Lisp family traditionally allow a larger set
+      of characters in identifiers than do most other languages.  For
+      example, <code>1+</code> and <code>3*/!</code> would parse as
+      symbols in Common Lisp.  Scheme is slightly more restrictive:
+      R5RS, R6RS and R7RS do not recognize identifiers that begin with a
+      decimal digit.  Some implementations are more relaxed.  For
+      example, MIT Scheme comes with <code>1+</code> and
+      <code>-1+</code> procedures to increment and decrement numbers.
+      Several implementations presently parse tokens consisting entirely
+      of digits and underscores as symbols.</p>
+
+    <p>Countless languages outside the Lisp family use the underscores
+      as word separators in multi-word identifiers – i.e. Scheme’s
+      <code>open-input-file</code> would be spelled
+      <code>open_input_file</code> instead.  In these languages it’s
+      common to use a leading underscore to mark private (as opposed to
+      public or exported) identifiers.  This leads to potential
+      ambiguity with identifiers such as <code>_123</code> that start
+      with an underscore and contain only underscores and digits.  Those
+      tokens often parse as identifiers.  If we made them parse as
+      numbers in Scheme instead it could confuse users.</p>
+
+    <p>Scheme supports a rich numeric tower of integers, ratios, real
+      and complex numbers.  These come in exact and inexact variants.
+      For real numbers we have decimal-point and exponent notation.
+      Particular implementations add quaternions and units of measure
+      to the mix.  Common Lisp’s <em>potential numbers</em> offer a
+      glimpse of how far numerical syntax can go.  These intricate
+      extensions, some of which we cannot even anticipate yet, make it
+      even trickier for us to specify a digit separation scheme devoid
+      of ambiguity.</p>
+
+    <p>We attempt to solve these problems with a conservative rule
+      that allows an underscores only <em>between</em> digits.  After
+      considering everything in the above paragraph, we did not manage
+      to come up with any concrete examples of present or future tasks
+      that would be impeded by this restricted version of the syntax
+      extension.</p>
+
+    <h1>Specification</h1>
+
+    <p>We stipulate that conforming implementations must <em>allow one
+      underscore between any two digits, in any part of a
+      number</em>.</p>
+
+    <p>The rule <em>includes</em>:</p>
+    <ul>
+      <li><p>Underscores in numbers of any radix (binary, octal,
+	decimal, hexadecimal).</p></li>
+
+      <li><p>Underscores between letters that represent digits in a
+	radix higher than 10 (hexadecimal in particular).</p></li>
+
+      <li><p>Underscores in the numerator and/or denominator of a
+	ratio.</p></li>
+
+      <li><p>Underscores in the integer, fractional and/or exponent
+	part of a real number.</p></li>
+
+      <li><p>Underscores in the real and/or imaginary part of a
+	complex number.</p></li>
+
+      <li><p>Underscores in any dimension of a hypercomplex number
+	(for implementations with syntax for such numbers).</p></li>
+
+      <li><p>Underscores in both exact and inexact numbers.</p></li>
+
+      <li><p>Underscores in the quantity part of a number with a unit
+	of measure (for implementations with syntax for units of
+	measure).</p></li>
+
+      <li><p>Underscores between leading zeros (but not before the
+	first zero).</p></li>
+    </ul>
+
+    <p>The rule <em>excludes</em>:</p>
+
+    <ul>
+      <li><p>Leading underscores.  They are potentially confused with
+	symbols that are coming from or going to other programming
+	languages.  For example, the C language permits the symbol
+	(identifier) <code>_123</code>.</p></li>
+
+      <li><p>Underscores between sign and magnitude.</p></li>
+
+      <li><p>Underscores between a radix or exactness prefix, and the
+	digits.</p></li>
+
+      <li><p>Trailing underscores.  They may cause trouble if another
+	syntax extension is made later to support units of measure.
+	Should the name of a unit begin with a digit, it would be
+	ambiguous where the quantity ends and where the unit
+	begins.</p></li>
+
+      <li><p>Two or more consecutive underscores.  We did not think of
+	concrete situations where these would be problematic, but decided
+	to avoid them anyway.  There are enough similar gotchas that
+	caution seems the wise choice.</p></li>
+    </ul>
+
+    <p>Conforming implementations <em>may</em> be more lenient in what
+      they allow (to maintain compatibility with existing code).  In
+      this document, numbers written according to the above rule are
+      called <em>conforming</em>.  Other numbers (which may or may not
+      be valid depending on the implementation) are called
+      <em>non-conforming</em>.</p>
+
+    <h1>Examples</h1>
+
+    <h2>Integers</h2>
+
+    <pre><code>0123             ; conforming
+0_1_2_3          ; conforming
+0_123            ; conforming
+01_23            ; conforming
+012_3            ; conforming
++0123            ; conforming
++0_123           ; conforming
+-0123            ; conforming
+-0_123           ; conforming
+
+_0123            ; non-conforming
+0123_            ; non-conforming
+0123__           ; non-conforming
+01__23           ; non-conforming
+0_1__2___3       ; non-conforming
++_0123           ; non-conforming
++0123_           ; non-conforming
+-_0123           ; non-conforming
+-0123_           ; non-conforming</code></pre>
+
+    <h2>Rational numbers</h2>
+    <pre><code>1_2_3/4_5_6_7    ; conforming
+12_34/5_678      ; conforming
+
+1_2_3/_4_5_6_7   ; non-conforming
+_12_34/5_678     ; non-conforming</code></pre>
+
+    <h2>Real numbers</h2>
+    <pre><code>0_1_23.4_5_6     ; conforming
+1_2_3.5e6        ; conforming
+1_2e1_2          ; conforming
+
+_0123.456        ; non-conforming
+0123_.456        ; non-conforming
+0123._456        ; non-conforming
+0123.456_        ; non-conforming
+123_.5e6         ; non-conforming
+123._5e6         ; non-conforming
+123.5_e6         ; non-conforming
+123.5e_6         ; non-conforming
+123.5e6_         ; non-conforming
+12_e12           ; non-conforming
+12e_12           ; non-conforming
+12e12_           ; non-conforming</code></pre>
+
+    <h2>Complex numbers</h2>
+
+    <pre><code>-12_3.0_00_00-12_34.56_78i   ; conforming
+-12_3.0_00_00@-12_34.56_78   ; conforming
+
+-12_3.0_00_00-12_34.56_78_i   ; non-conforming
+-12_3.0_00_00-12_34.56_78i_   ; non-conforming
+-12_3.0_00_00_@-12_34.56_78   ; non-conforming
+-12_3.0_00_00@_-12_34.56_78   ; non-conforming</code></pre>
+
+    <h2>Hypercomplex numbers</h2>
+
+    <p>Kawa supports quaternions using the following syntax:</p>
+    <pre><code>1+2i-3j+4k</code></pre>
+
+    <p>By applying the rule a syntax like that can be extended as
+      follows:</p>
+
+    <pre><code>1_0+2_0i-3_0j+4_0k   ; conforming
+
+1_0_+2_0i-3_0j+4_0k  ; non-conforming
+1_0+2_0_i-3_0j+4_0k  ; non-conforming
+1_0+2_0i-3_0j_+4_0k  ; non-conforming
+1_0+2_0i-3_0j+4_0k_  ; non-conforming</code></pre>
+
+    <h2>Units of measure</h2>
+
+    <p>Kawa supports units of measure using the following syntax:</p>
+
+    <pre><code>123456cm^2</code></pre>
+
+    <p>By applying the rule a syntax like that can be extended as
+      follows:</p>
+
+    <pre><code>123_456cm^2          ; conforming
+
+123_456_cm^2         ; non-conforming
+123_456.78_cm^2      ; non-conforming</code></pre>
+
+    <h2>Numbers with radix or exactness prefixes</h2>
+    <pre><code>#b10_10_10           ; conforming
+#o23_45_67           ; conforming
+#d45_67_89           ; conforming
+#xAB_CD_EF           ; conforming
+#x-2_0               ; conforming
+#o+2_345_6           ; conforming
+
+#x-_2                ; non-conforming
+_#x-_2               ; non-conforming
+#d_45_67_89          ; non-conforming
+#e_45/67_89          ; non-conforming
+#i#o_1234            ; non-conforming
+#i_#o_1234           ; non-conforming
+#e#x1234_            ; non-conforming</code></pre>
+
+    <h1>Implementation</h1>
+
+    <p>TODO</p>
+
+    <h1>Acknowledgements</h1>
+
+    <p>TODO</p>
+
+    <h1>Copyright</h1>
+
+    <p>Copyright (C) TODO 2019</p>
+
+    <p>Permission is hereby granted, free of charge, to any person
+      obtaining a copy of this software and associated documentation
+      files (the “Software”), to deal in the Software without
+      restriction, including without limitation the rights to use, copy,
+      modify, merge, publish, distribute, sublicense, and/or sell copies
+      of the Software, and to permit persons to whom the Software is
+      furnished to do so, subject to the following conditions:</p>
+
+    <p>The above copyright notice and this permission notice shall be
+      included in all copies or substantial portions of the
+      Software.</p>
+
+    <p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+      EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+      OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+      NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+      HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+      WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+      FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+      OTHER DEALINGS IN THE SOFTWARE.</p>
+  </body>
+</html>
