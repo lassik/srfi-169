@@ -76,7 +76,7 @@
 
       <li><p>C++ uses an apostrophe which is somewhat exotic and may
         call to mind units of measure, e.g. feet and inches.  Scheme
-        also uses the apostrophe for quotation, e.g. <code>'(1'2)</code>
+        also uses the apostrophe for quotation: e.g. <code>'(1'2)</code>
         evaluates to <code>(1 (quote 2))</code>.  Allowing apostrophes
         in numbers would change the meaning of this syntax.</p></li>
 
@@ -100,12 +100,12 @@
 
     <p>Languages in the Lisp family traditionally allow a larger set
       of characters in identifiers than do most other languages. For
-      example, <code>1+</code> and <code>3*/!</code> would parse as
-      symbols in Common Lisp. Scheme is slightly more restrictive:
-      R<sup>4</sup>RS, R<sup>5</sup>RS, R<sup>6</sup>RS and
-      R<sup>7</sup>RS do not recognize identifiers that begin with a
-      decimal digit. Some implementations are more relaxed. For
-      example, MIT Scheme comes with <code>1+</code> and
+      example, the tokens <code>1+</code> and <code>3*/!</code> parse
+      as symbols in Common Lisp. Scheme is slightly more restrictive:
+      none of R<sup>4</sup>RS, R<sup>5</sup>RS, R<sup>6</sup>RS and
+      R<sup>7</sup>RS recognize identifiers that begin with a decimal
+      digit. Some implementations are more relaxed with identifiers.
+      For example, MIT Scheme comes with <code>1+</code> and
       <code>-1+</code> procedures to increment and decrement numbers.
       Several implementations presently parse tokens consisting entirely
       of digits and underscores as symbols.</p>
@@ -120,8 +120,8 @@
       ambiguity with identifiers such as <code>_123</code> that start
       with an underscore and contain only underscores and digits. Such
       tokens often parse as identifiers. If we made them parse as
-      numbers in Scheme it could confuse users and spell trouble for
-      code generators that translate Scheme symbols to other
+      numbers in Scheme it could confuse programmers and spell trouble
+      for code generators that translate Scheme symbols to other
       languages.</p>
 
     <p>Trailing underscores at the end of a number might cause trouble
@@ -165,7 +165,7 @@
       publication of this SRFI.
     </p>
     <p>
-      Apart from printer extension concerns, the cultural conventions
+      Apart from printer extension concerns the cultural conventions
       of where to place digit separators are also varied and complex.
       When reading numbers we can leave the decision to writers and
       simply accept a wide range of possibilities. When printing we
@@ -174,7 +174,7 @@
     </p>
     <p>
       For these reasons, decisions about printing are deferred to
-      implementations and future SRFIs.
+      implementations and to future SRFIs.
     </p>
 
     <h1>Specification</h1>
