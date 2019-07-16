@@ -67,7 +67,7 @@
 
       <li><p>The next natural alternative is to use a comma or a
         period.  This is likely to cause confusion in an international
-        community since countries that a use comma as the decimal
+        community since countries that use a comma as the decimal
         separator are as numerous as those that use a period.  More
         trouble comes from Scheme using the comma to splice things into
         a quasiquoted list: e.g.  <code>`(1,2)</code> evaluates to
@@ -109,8 +109,9 @@
       Several implementations presently parse tokens consisting entirely
       of digits and underscores as symbols.</p>
 
-    <p>Countless languages outside the Lisp family use the underscores
-      as word separators in multi-word identifiers – i.e. Scheme’s
+    <p>Countless languages outside the Lisp family use underscores as
+      word separators in multi-word identifiers. Following that
+      conventions, Scheme’s
       <code>open-input-file</code> would be spelled
       <code>open_input_file</code> instead.  In these languages, it’s
       common to use a leading underscore to mark private (as opposed
@@ -121,18 +122,18 @@
       numbers in Scheme instead, it could confuse users.</p>
 
     <p>Scheme supports a rich numeric tower of integers, ratios, real
-      and complex numbers.  These come in exact and inexact variants.
+      and complex numbers.  These come in exact and inexact varieties.
       For real numbers, we have decimal-point and exponent notation.
       Particular implementations add quaternions and units of measure
       to the mix.  Common Lisp’s <em>potential numbers</em> offer a
       glimpse of how far numerical syntax can go.  These intricate
       extensions, some of which we cannot even anticipate yet, make it
-      even trickier for us to specify a digit-separation scheme devoid
+      even trickier for us to specify a digit separation scheme devoid
       of ambiguity.</p>
 
     <p>We attempt to solve these problems with a conservative rule
       that allows underscores only <em>between</em> digits.  After
-      considering everything in the above paragraph, we did not manage
+      considering everything in the above paragraphs, we did not manage
       to come up with any concrete examples of present or future tasks
       that would be impeded by this restricted version of the syntax
       extension.</p>
@@ -341,19 +342,19 @@ _#x-_2               ; non-conforming
       from <code>current-input-port</code> with support for optional
       underscores as specified in this SRFI. It signals an error if
       underscores are used in a non-conforming way according to the
-      rule of this SRFI, or if the number syntax (sans underscores)
-      does not conform to the R<sup>7</sup>RS specification.</p>
+      rule stipulated in this SRFI, or if the number syntax (sans
+      underscores) does not conform to the R<sup>7</sup>RS
+      specification.</p>
 
     <p>This reader supports most of the R<sup>7</sup>RS numeric tower
-      with the notable exception of complex numbers. The read values
-      of inexact numbers may diverge from the values produced by the
+      with the notable exception of complex numbers. The values of
+      inexact numbers may diverge from the values produced by the
       native reader of a Scheme implementation if it uses different
       formulas for numeric conversion.</p>
 
     <p>The code has been tested against the examples in this SRFI.
       Correct results were obtained with Chibi-Scheme, Gauche and
-      Kawa. The test harness with test suite is available on
-      request.</p>
+      Kawa. The test harness is available on request.</p>
 
     <pre>
 ;;; Conditional reading utility
