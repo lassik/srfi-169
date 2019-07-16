@@ -484,7 +484,60 @@ _#x-_2               ; non-conforming
 
     <h1>Acknowledgements</h1>
 
-    <p>TODO</p>
+    <p>
+      This SRFI is the result of an impromptu design session on
+      the <code>srfi-discuss</code> mailing list over the weekend
+      between April 12th and April 15th.
+    </p>
+    <p>
+      Lassi Kortela suggested the idea, wrote this document and
+      produced the reference implementation. However the design is
+      entirely a group effort.
+    </p>
+    <p>
+      John Cowan provided invaluable expertise on human and computer
+      languages. He cautioned against requiring a fixed number of
+      digits per group and provided the Indian English example. John
+      found the extensive list of programming languages already using
+      underscores. John and Lassi cautioned against the ambiguity of
+      using commas as delimiters.
+    </p>
+    <p>
+      Per Bothner introduced Kawa's extended number syntax and noted
+      Common Lisp's <em>potential numbers</em> as prior art. Per and
+      John made sure the underscore syntax works when units of measure
+      are supported, considering prior art from Kawa's syntax and the
+      JavaScript community. Per explained Kawa's syntax for
+      quaternions which led to hypercomplex numbers being supported.
+    </p>
+    <p>
+      Shiro Kawai explained the approach of Gauche which can already
+      skip underscores when reading <code>#</code>-prefixed numbers.
+    </p>
+    <p>
+      Peter Bex cautioned against over-extending Scheme's already
+      intricate number syntax and potentially breaking
+      backward-compatibility for some programs. John and Lassi
+      advocated forbidding leading, trailing and repeated underscores
+      as a reasonable precaution. Arthur Gleckler suggested a
+      dedicated <code>#_</code> prefix and a user interface feature
+      for text editors as two failsafe alternatives.
+    </p>
+    <p>
+      Shiro, Peter and John reminded us that symbols starting with
+      digits are forbidden in Scheme standards since R<sup>4</sup>RS. But Jim
+      Rees, Arthur and John brought up <em>peculiar identifiers</em>
+      which let implementations break that rule.
+    </p>
+    <p>
+      Hugo Hörnquist had the idea of using
+      Scheme's <code>display</code> procedure to print numbers with
+      underscores, reserving <code>write</code> for portable syntax.
+      John advised to postpone any decisions about printing, pointing
+      to Alex Shinn's SRFI 159 and SRFI 166 as potential solutions
+      with a view to the upcoming large edition of the R<sup>7</sup>RS
+      standard.
+    </p>
 
     <h1>Copyright</h1>
 
