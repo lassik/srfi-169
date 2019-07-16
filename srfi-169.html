@@ -99,37 +99,46 @@
     <h2>Potential ambiguity between numbers and identifiers</h2>
 
     <p>Languages in the Lisp family traditionally allow a larger set
-      of characters in identifiers than do most other languages.  For
+      of characters in identifiers than do most other languages. For
       example, <code>1+</code> and <code>3*/!</code> would parse as
-      symbols in Common Lisp.  Scheme is slightly more restrictive:
-      R<sup>5</sup>RS, R<sup>6</sup>RS and R<sup>7</sup>RS do not recognize identifiers that begin with a
-      decimal digit.  Some implementations are more relaxed.  For
+      symbols in Common Lisp. Scheme is slightly more restrictive:
+      R<sup>4</sup>RS, R<sup>5</sup>RS, R<sup>6</sup>RS and
+      R<sup>7</sup>RS do not recognize identifiers that begin with a
+      decimal digit. Some implementations are more relaxed. For
       example, MIT Scheme comes with <code>1+</code> and
       <code>-1+</code> procedures to increment and decrement numbers.
       Several implementations presently parse tokens consisting entirely
       of digits and underscores as symbols.</p>
 
-    <p>Countless languages outside the Lisp family use underscores as
-      word separators in multi-word identifiers. Following that
-      conventions, Scheme’s
+    <p>Countless languages outside the Lisp family have a convention
+      of using underscores as word separators in multi-word
+      identifiers. Following that convention, Scheme’s
       <code>open-input-file</code> would be spelled
-      <code>open_input_file</code> instead.  In these languages, it’s
+      <code>open_input_file</code> instead. In these languages it’s
       common to use a leading underscore to mark private (as opposed
-      to public or exported) identifiers.  This leads to potential
+      to public or exported) identifiers. This leads to potential
       ambiguity with identifiers such as <code>_123</code> that start
-      with an underscore and contain only underscores and digits.  Those
-      tokens often parse as identifiers.  If we made them parse as
-      numbers in Scheme instead, it could confuse users.</p>
+      with an underscore and contain only underscores and digits. Such
+      tokens often parse as identifiers. If we made them parse as
+      numbers in Scheme it could confuse users and spell trouble for
+      code generators that translate Scheme symbols to other
+      languages.</p>
+
+    <p>Trailing underscores at the end of a number might cause trouble
+        if another syntax extension is made to support units of
+        measure and the name of a unit is allowed to begin with a
+        digit. In the worst case it could be ambiguous where the
+        numerical quantity ends and the unit's name begins.</p>
 
     <p>Scheme supports a rich numeric tower of integers, ratios, real
-      and complex numbers.  These come in exact and inexact varieties.
+      and complex numbers. These come in exact and inexact varieties.
       For real numbers, we have decimal-point and exponent notation.
-      Particular implementations add quaternions and units of measure
-      to the mix.  Common Lisp’s <em>potential numbers</em> offer a
-      glimpse of how far numerical syntax can go.  These intricate
-      extensions, some of which we cannot even anticipate yet, make it
-      even trickier for us to specify a digit separation scheme devoid
-      of ambiguity.</p>
+      The Kawa implementation of Scheme adds quaternions and units of
+      measure to the mix. Common Lisp’s <em>potential numbers</em>
+      offer a glimpse of how far numerical syntax can go. These
+      intricate extensions, some of which we cannot even anticipate
+      yet, make it even trickier for us to specify a digit separation
+      scheme devoid of ambiguity.</p>
 
     <p>We attempt to solve these problems with a conservative rule
       that allows underscores only <em>between</em> digits.  After
@@ -137,6 +146,12 @@
       to come up with any concrete examples of present or future tasks
       that would be impeded by this restricted version of the syntax
       extension.</p>
+
+    <p>As an extra measure we also forbid more than one consecutive
+    underscore. We could not think of any particular situations where
+    repeated underscores cause problems but decided to avoid them
+    anyway. There are enough similar gotchas that caution seems the
+    wise choice.</p>
 
     <h2>Printing numbers with underscores</h2>
 
