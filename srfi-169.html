@@ -188,8 +188,10 @@
       <li><p>Underscores in numbers of any radix (binary, octal,
         decimal, hexadecimal).</p></li>
 
-      <li><p>Underscores between letters that represent digits in a
-        radix higher than 10 (hexadecimal in particular).</p></li>
+      <li><p>Underscores between letters <code>a-z A-Z</code> that
+        represent digits in a radix higher than 10 (using the standard
+        hexadecimal read syntax, or any implementation-defined read
+        syntax).</p></li>
 
       <li><p>Underscores in the numerator and/or denominator of a
         ratio.</p></li>
@@ -216,16 +218,34 @@
     <p>The rule <em>excludes</em>:</p>
 
     <ul>
-      <li><p>Leading underscores.</li>
+      <li><p>Leading underscores in any group of digits.</li>
+
+      <li><p>Trailing underscores in any group of digits.</p></li>
+
+      <li><p>Two or more consecutive underscores.</p></li>
 
       <li><p>Underscores between sign and magnitude.</p></li>
 
-      <li><p>Underscores between a radix or exactness prefix, and the
-        digits.</p></li>
+      <li><p>Underscores next to a letter in a prefix. This includes
+          the <code>#b #o #d #x</code> radix prefixes, the
+           <code>#e #i</code> exactness prefixes and
+          the <code>#</code><em>n</em><code>r</code> arbitrary radix prefix of Chez
+          Scheme.</p></li>
 
-      <li><p>Trailing underscores.</p></li>
+      <li><p>Underscores next to <code>#</code> unknown digit markers
+      in inexact numbers.</p></li>
 
-      <li><p>Two or more consecutive underscores.</p></li>
+      <li><p>Underscores next to the <code>d D e E f F l L s S</code>
+      exponent markers.</p></li>
+
+      <li><p>Underscores next to the <code>@ + - i j k</code> markers
+      in complex and hypercomplex numbers.</p></li>
+
+      <li><p>Underscores next to the R<sup>6</sup>RS <code>|</code>
+      mantissa width suffix.</p></li>
+
+      <li><p>Underscores next to and within the <code>inf</code>
+      and <code>nan</code> markers.</p></li>
     </ul>
 
     <p>Conforming implementations <em>may</em> be more lenient in what
