@@ -201,26 +201,16 @@
     <p>The rule <em>excludes</em>:</p>
 
     <ul>
-      <li><p>Leading underscores.  They are potentially confused with
-        symbols that are coming from or going to other programming
-        languages.  For example, the C language permits the symbol
-        (identifier) <code>_123</code>.</p></li>
+      <li><p>Leading underscores.</li>
 
       <li><p>Underscores between sign and magnitude.</p></li>
 
       <li><p>Underscores between a radix or exactness prefix, and the
         digits.</p></li>
 
-      <li><p>Trailing underscores.  They may cause trouble if another
-        syntax extension is made later to support units of measure.
-        Should the name of a unit begin with a digit, it would be
-        ambiguous where the quantity ends and where the unit
-        begins.</p></li>
+      <li><p>Trailing underscores.</p></li>
 
-      <li><p>Two or more consecutive underscores.  We did not think of
-        concrete situations where these would be problematic, but decided
-        to avoid them anyway.  There are enough similar gotchas that
-        caution seems the wise choice.</p></li>
+      <li><p>Two or more consecutive underscores.</p></li>
     </ul>
 
     <p>Conforming implementations <em>may</em> be more lenient in what
