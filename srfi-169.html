@@ -16,12 +16,12 @@
 
     <p>This SRFI is currently in <em>draft</em> status.  Here is
       <a href="https://srfi.schemers.org/srfi-process.html">an
-	explanation</a> of each status that a SRFI can hold.  To
+        explanation</a> of each status that a SRFI can hold.  To
       provide input on this SRFI, please send email to
       <code><a href="mailto:srfi+minus+169+at+srfi+dotschemers+dot+org">srfi-169@<span class="antispam">nospam</span>srfi.schemers.org</a></code>.
       To subscribe to the list, follow
       <a href="https://srfi.schemers.org/srfi-list-subscribe.html">these
-	instructions</a>.  You can access previous messages via the
+        instructions</a>.  You can access previous messages via the
       mailing list <a href="https://srfi-email.schemers.org/srfi-169">archive</a>.</p>
 
     <ul>
@@ -61,35 +61,35 @@
 
     <ul>
       <li><p>The examples in this document so far have used a space.
-	This is familiar to humans but not a good fit for most
-	programming languages since whitespace has a prominent role as
-	token separator.  Scheme is no exception here.</p></li>
+        This is familiar to humans but not a good fit for most
+        programming languages since whitespace has a prominent role as
+        token separator.  Scheme is no exception here.</p></li>
 
       <li><p>The next natural alternative is to use a comma or a
-	period.  This is likely to cause confusion in an international
-	community since countries that a use comma as the decimal
-	separator are as numerous as those that use a period.  More
-	trouble comes from Scheme using the comma to splice things into
-	a quasiquoted list: e.g.  <code>`(1,2)</code> evaluates to
-	<code>(1 2)</code>.  Allowing commas in numbers would change
-	splicing behavior in a confusing way.</p></li>
+        period.  This is likely to cause confusion in an international
+        community since countries that a use comma as the decimal
+        separator are as numerous as those that use a period.  More
+        trouble comes from Scheme using the comma to splice things into
+        a quasiquoted list: e.g.  <code>`(1,2)</code> evaluates to
+        <code>(1 2)</code>.  Allowing commas in numbers would change
+        splicing behavior in a confusing way.</p></li>
 
       <li><p>C++ uses an apostrophe which is somewhat exotic and may
-	call to mind units of measure, e.g. feet and inches.  Scheme
-	also uses the apostrophe for quotation, e.g. <code>'(1'2)</code>
-	evaluates to <code>(1 (quote 2))</code>.  Allowing apostrophes
-	in numbers would change the meaning of this syntax.</p></li>
+        call to mind units of measure, e.g. feet and inches.  Scheme
+        also uses the apostrophe for quotation, e.g. <code>'(1'2)</code>
+        evaluates to <code>(1 (quote 2))</code>.  Allowing apostrophes
+        in numbers would change the meaning of this syntax.</p></li>
 
       <li><p>The most popular digit group separator among programming
-	languages is the underscore.  It is in the standard syntax of
-	Ada, C#, Clojure, Eiffel, Frink, Java, Julia, Kotlin, OCaml,
-	Perl, Python, Ruby, Rust and Swift.  It is also being added to
-	JavaScript and is a common syntax extension in implementations
-	of Standard ML.  The Common Lisp standard permits it under the
-	umbrella of <em>potential numbers</em> but we are not aware of
-	implementations that use the opportunity.  Of Scheme
-	implementations, Gauche can read numbers with underscores when
-	they have a radix or exactness prefix.</p></li>
+        languages is the underscore.  It is in the standard syntax of
+        Ada, C#, Clojure, Eiffel, Frink, Java, Julia, Kotlin, OCaml,
+        Perl, Python, Ruby, Rust and Swift.  It is also being added to
+        JavaScript and is a common syntax extension in implementations
+        of Standard ML.  The Common Lisp standard permits it under the
+        umbrella of <em>potential numbers</em> but we are not aware of
+        implementations that use the opportunity.  Of Scheme
+        implementations, Gauche can read numbers with underscores when
+        they have a radix or exactness prefix.</p></li>
     </ul>
 
     <p>In light of the above, we consider the underscore to be the
@@ -146,56 +146,56 @@
     <p>The rule <em>includes</em>:</p>
     <ul>
       <li><p>Underscores in numbers of any radix (binary, octal,
-	decimal, hexadecimal).</p></li>
+        decimal, hexadecimal).</p></li>
 
       <li><p>Underscores between letters that represent digits in a
-	radix higher than 10 (hexadecimal in particular).</p></li>
+        radix higher than 10 (hexadecimal in particular).</p></li>
 
       <li><p>Underscores in the numerator and/or denominator of a
-	ratio.</p></li>
+        ratio.</p></li>
 
       <li><p>Underscores in the integer, fractional and/or exponent
-	part of a real number.</p></li>
+        part of a real number.</p></li>
 
       <li><p>Underscores in the real and/or imaginary part of a
-	complex number.</p></li>
+        complex number.</p></li>
 
       <li><p>Underscores in any dimension of a hypercomplex number
-	(for implementations with syntax for such numbers).</p></li>
+        (for implementations with syntax for such numbers).</p></li>
 
       <li><p>Underscores in both exact and inexact numbers.</p></li>
 
       <li><p>Underscores in the quantity part of a number with a unit
-	of measure (for implementations with syntax for units of
-	measure).</p></li>
+        of measure (for implementations with syntax for units of
+        measure).</p></li>
 
       <li><p>Underscores between leading zeros (but not before the
-	first zero).</p></li>
+        first zero).</p></li>
     </ul>
 
     <p>The rule <em>excludes</em>:</p>
 
     <ul>
       <li><p>Leading underscores.  They are potentially confused with
-	symbols that are coming from or going to other programming
-	languages.  For example, the C language permits the symbol
-	(identifier) <code>_123</code>.</p></li>
+        symbols that are coming from or going to other programming
+        languages.  For example, the C language permits the symbol
+        (identifier) <code>_123</code>.</p></li>
 
       <li><p>Underscores between sign and magnitude.</p></li>
 
       <li><p>Underscores between a radix or exactness prefix, and the
-	digits.</p></li>
+        digits.</p></li>
 
       <li><p>Trailing underscores.  They may cause trouble if another
-	syntax extension is made later to support units of measure.
-	Should the name of a unit begin with a digit, it would be
-	ambiguous where the quantity ends and where the unit
-	begins.</p></li>
+        syntax extension is made later to support units of measure.
+        Should the name of a unit begin with a digit, it would be
+        ambiguous where the quantity ends and where the unit
+        begins.</p></li>
 
       <li><p>Two or more consecutive underscores.  We did not think of
-	concrete situations where these would be problematic, but decided
-	to avoid them anyway.  There are enough similar gotchas that
-	caution seems the wise choice.</p></li>
+        concrete situations where these would be problematic, but decided
+        to avoid them anyway.  There are enough similar gotchas that
+        caution seems the wise choice.</p></li>
     </ul>
 
     <p>Conforming implementations <em>may</em> be more lenient in what
