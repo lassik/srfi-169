@@ -225,9 +225,9 @@
   <p>The rule <em>includes</em> at least the following things:</p>
   <ul>
     <li>
-      <p>Underscores in numbers of any radix (binary, octal,
-      decimal, hexadecimal and any others supported by the
-      implementation).</p>
+      <p>Underscores between digits in numbers of any radix
+      (binary, octal, decimal, hexadecimal and any others supported
+      by the implementation).</p>
     </li>
     <li>
       <p>Underscores between digits <code>0-9 a-z A-Z</code> when a
@@ -267,10 +267,10 @@
   <p>The rule <em>excludes</em> at least the following things:</p>
   <ul>
     <li>
-      <p>Leading underscores in any group of digits.</p>
+      <p>Leading underscores before digits.</p>
     </li>
     <li>
-      <p>Trailing underscores in any group of digits.</p>
+      <p>Trailing underscores after digits.</p>
     </li>
     <li>
       <p>Two or more consecutive underscores.</p>
@@ -358,8 +358,8 @@ _0123.456        ; non-conforming
 12e_12           ; non-conforming
 12e12_           ; non-conforming</code></pre>
   <h2>Complex numbers</h2>
-  <pre><code>-12_3.0_00_00-12_34.56_78i   ; conforming
--12_3.0_00_00@-12_34.56_78   ; conforming
+  <pre><code>-12_3.0_00_00-12_34.56_78i    ; conforming
+-12_3.0_00_00@-12_34.56_78    ; conforming
 
 -12_3.0_00_00-12_34.56_78_i   ; non-conforming
 -12_3.0_00_00-12_34.56_78i_   ; non-conforming
