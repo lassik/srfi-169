@@ -120,11 +120,6 @@
   numbers in Scheme it could confuse programmers and spell trouble
   for code generators that translate Scheme symbols to other
   languages.</p>
-  <p>Trailing underscores at the end of a number might cause
-  trouble if another syntax extension is made to support units of
-  measure and the name of a unit is allowed to begin with a digit.
-  In the worst case it could be ambiguous where the numerical
-  quantity ends and the unit's name begins.</p>
   <p>Scheme supports a rich numeric tower of integers, ratios, real
   and complex numbers. These come in exact and inexact varieties.
   For real numbers, we have decimal-point and exponent notation.
@@ -140,11 +135,11 @@
   to come up with any concrete examples of present or future tasks
   that would be impeded by this restricted version of the syntax
   extension.</p>
-  <p>As an extra measure we also forbid more than one consecutive
-  underscore. We could not think of any particular situations where
-  repeated underscores cause problems but decided to avoid them
-  anyway. There are enough similar gotchas that caution seems the
-  wise choice.</p>
+  <p>As an extra measure we also forbid trailing underscores, and
+  forbid more than one consecutive underscore. We could not think
+  of any particular situations where repeated underscores cause
+  problems but decided to avoid them anyway. There are enough
+  similar gotchas that caution seems the wise choice.</p>
   <h2>Printing numbers with underscores</h2>
   <p>This SRFI does not specify anything about inserting
   underscores into numbers at print time. Printing with underscores
