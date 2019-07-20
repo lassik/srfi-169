@@ -172,8 +172,8 @@
       implementation).</p>
     </li>
     <li>
-      <p>Underscores between letters <code>a-z A-Z</code> that
-      represent digits in a radix higher than 10 (using the
+      <p>Underscores between digits <code>0-9 a-z A-Z</code> when a
+      number is written in a radix higher than 10 (using the
       standard hexadecimal read syntax, or any
       implementation-defined read syntax).</p>
     </li>
@@ -332,6 +332,7 @@ _0123.456        ; non-conforming
 #o23_45_67           ; conforming
 #d45_67_89           ; conforming
 #xAB_CD_EF           ; conforming
+#x789_9B_C9_EF       ; conforming
 #x-2_0               ; conforming
 #o+2_345_6           ; conforming
 
