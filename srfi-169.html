@@ -159,10 +159,12 @@
   <p>For these reasons, decisions about printing are deferred to
   implementations and to future SRFIs.</p>
   <h1>Specification</h1>
+  <h2>The rule</h2>
   <p>We stipulate that conforming implementations must <em>allow
   one underscore between any two digits, in any part of a
   number</em>.</p>
-  <p>The rule <em>includes</em>:</p>
+  <h2>Implications of the rule</h2>
+  <p>The rule <em>includes</em> at least the following things:</p>
   <ul>
     <li>
       <p>Underscores in numbers of any radix (binary, octal,
@@ -204,7 +206,7 @@
       first zero).</p>
     </li>
   </ul>
-  <p>The rule <em>excludes</em>:</p>
+  <p>The rule <em>excludes</em> at least the following things:</p>
   <ul>
     <li>
       <p>Leading underscores in any group of digits.</p>
@@ -246,11 +248,12 @@
       <code>nan</code> markers.</p>
     </li>
   </ul>
+  <h2>Conforming and non-conforming number representations</h2>
   <p>Conforming implementations <em>may</em> be more lenient in
-  what they allow (to maintain compatibility with existing code).
-  In this document, numbers written according to the above rule are
-  called <em>conforming</em>. Other numbers (which may or may not
-  be valid depending on the implementation) are called
+  what they allow (perhaps to maintain compatibility with existing
+  code). In this document, numbers written according to the above
+  rule are called <em>conforming</em>. Other numbers (which may or
+  may not be valid depending on the implementation) are called
   <em>non-conforming</em>.</p>
   <h1>Examples</h1>
   <h2>Integers</h2>
