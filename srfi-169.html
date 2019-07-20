@@ -159,10 +159,67 @@
   <p>For these reasons, decisions about printing are deferred to
   implementations and to future SRFIs.</p>
   <h1>Specification</h1>
-  <h2>The rule</h2>
-  <p>We stipulate that conforming implementations must <em>allow
-  one underscore between any two digits, in any part of a
+  <h2>The underscore rule</h2>
+  <p>We stipulate that conforming implementations of this SRFI must
+  <em>allow one underscore between any two digits, in any part of a
   number</em>.</p>
+  <p>For the purpose of this rule, the term <em>digit</em> covers
+  all digits in any radix between 2 and 36 inclusive - not only
+  decimal digits. That means that the letters <code>a-z</code> and
+  <code>A-Z</code> are considered digits (but only in places when
+  the implementation parses that character as a digit).</p>
+  <h2>The rule is necessarily ambiguous and incomplete</h2>
+  <p>We lament that it is impossible to give a precise formal
+  definition of the underscore rule because a typical Scheme
+  implementation does not have a complete formal grammar for its
+  syntax. Even if it did, that grammar could change in new
+  versions.</p>
+  <p>The next section gives what we believe to be a correct and
+  complete extension to the formal grammar of standard Scheme. But
+  since few implementations support the whole standard syntax and
+  nothing but the standard syntax, implementors of this SRFI may
+  encounter situations where their subjective judgment is called
+  for. The subsequent section attempts to help by listing many
+  examples of how the rule is intended to apply in particular
+  situations. Unfortunately that list cannot be exhaustive
+  either.</p>
+  <p>In situations where the letter of this specification does not
+  say anything conclusive, we ask that implementors try to follow
+  its spirit. When in doubt as to whether or not underscores should
+  be supported in a particular part of number syntax, we suggest
+  that implementors <em>not</em> allow them. They can always be
+  allowed later once there is more clarity or consensus.</p>
+  <h2>The rule as applied to R<sup>n</sup>RS</h2>
+  <p>The standard syntax of Scheme is defined in:</p>
+  <ul>
+    <li>R<sup>6</sup>RS section <em>4.2. Lexical syntax</em></li>
+    <li>R<sup>7</sup>RS section <em>7.1. Formal syntax</em></li>
+  </ul>
+  <p>The underscore rule can be implemented as an extension to
+  either standard by adding the following grammar rules to the
+  lexical syntax:</p>
+  <pre>
+⟨digits R⟩       = ⟨digit R⟩+ ⟨more digits R⟩
+⟨more digits R⟩  = ⟨empty⟩ | ⟨one underscore⟩ ⟨digits R⟩
+⟨maybe digits R⟩ = ⟨empty⟩ | ⟨digits R⟩
+⟨one underscore⟩ = _</pre>
+  <p>and then making the following substitutions in existing rules
+  (for all <code>R</code>):</p>
+  <ul>
+    <li>replace all occurrences of <code>⟨digit R⟩+</code> with
+    <code>⟨digits R⟩</code></li>
+    <li>replace all occurrences of <code>⟨digit R⟩*</code> with
+    <code>⟨maybe digits R⟩</code></li>
+  </ul>
+  <p>Note that both standards also define the character classes
+  <code>⟨digit⟩</code> and <code>⟨hex digit⟩</code>. Neither of
+  those should be amended. The <code>⟨digit⟩</code> class is used
+  for identifiers and to help define other character classes. The
+  <code>⟨hex digit⟩</code> class is used to define the backslash
+  escape syntax for inserting characters into strings by their
+  hexadecimal value. This SRFI does not modify the syntax of string
+  escapes, and does not aim to modify the syntax of
+  identifiers.</p>
   <h2>Implications of the rule</h2>
   <p>The rule <em>includes</em> at least the following things:</p>
   <ul>
@@ -248,13 +305,13 @@
       <code>nan</code> markers.</p>
     </li>
   </ul>
-  <h2>Conforming and non-conforming number representations</h2>
+  <h2>Being lenient about the rule</h2>
   <p>Conforming implementations <em>may</em> be more lenient in
   what they allow (perhaps to maintain compatibility with existing
-  code). In this document, numbers written according to the above
-  rule are called <em>conforming</em>. Other numbers (which may or
-  may not be valid depending on the implementation) are called
-  <em>non-conforming</em>.</p>
+  code). In this document, numbers written according to the
+  underscore rule are called <em>conforming</em>. Other numbers
+  (which may or may not be valid depending on the implementation)
+  are called <em>non-conforming</em>.</p>
   <h1>Examples</h1>
   <h2>Integers</h2>
   <pre><code>0123             ; conforming
@@ -384,8 +441,8 @@ _#x-_2               ; non-conforming
   JavaScript community. Per explained Kawa's syntax for quaternions
   which led to hypercomplex numbers being supported.</p>
   <p>Shiro Kawai explained the approach of Gauche which can already
-  skip underscores when reading <code>#</code>-prefixed
-  numbers.</p>
+  skip underscores when reading <code>#</code>-prefixed numbers. He
+  suggested extending Scheme's formal grammar.</p>
   <p>Peter Bex cautioned against over-extending Scheme's already
   intricate number syntax and potentially breaking
   backward-compatibility for some programs. John and Lassi
