@@ -102,11 +102,13 @@
   as symbols in Common Lisp. Scheme is slightly more restrictive:
   none of R<sup>4</sup>RS, R<sup>5</sup>RS, R<sup>6</sup>RS and
   R<sup>7</sup>RS recognize identifiers that begin with a decimal
-  digit. Some implementations are more relaxed with identifiers.
-  For example, MIT Scheme comes with <code>1+</code> and
+  digit. Implementations can be more relaxed with identifiers. For
+  example, MIT Scheme comes with <code>1+</code> and
   <code>-1+</code> procedures to increment and decrement numbers.
   Several implementations presently parse tokens consisting
-  entirely of digits and underscores as symbols.</p>
+  entirely of digits and underscores as symbols. Some
+  implementations, such as Chicken, assume that anything they
+  cannot recognize as a number is an identifier.</p>
   <p>Countless languages outside the Lisp family have a convention
   of using underscores as word separators in multi-word
   identifiers. Following that convention, Scheme’s
