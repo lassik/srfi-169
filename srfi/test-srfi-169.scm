@@ -109,6 +109,7 @@
 (conforming "#o23_45_67" #o234567)
 (conforming "#d45_67_89" #d456789)
 (conforming "#xAB_CD_EF" #xABCDEF)
+(conforming "#x789_9B_C9_EF" #x7899BC9EF)
 (conforming "#x-2_0" #x-20)
 (conforming "#o+2_345_6" #o23456)
 

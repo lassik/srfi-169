@@ -102,11 +102,13 @@
   as symbols in Common Lisp. Scheme is slightly more restrictive:
   none of R<sup>4</sup>RS, R<sup>5</sup>RS, R<sup>6</sup>RS and
   R<sup>7</sup>RS recognize identifiers that begin with a decimal
-  digit. Some implementations are more relaxed with identifiers.
-  For example, MIT Scheme comes with <code>1+</code> and
+  digit. Implementations can be more relaxed with identifiers. For
+  example, MIT Scheme comes with <code>1+</code> and
   <code>-1+</code> procedures to increment and decrement numbers.
   Several implementations presently parse tokens consisting
-  entirely of digits and underscores as symbols.</p>
+  entirely of digits and underscores as symbols. Some
+  implementations, such as Chicken, assume that anything they
+  cannot recognize as a number is an identifier.</p>
   <p>Countless languages outside the Lisp family have a convention
   of using underscores as word separators in multi-word
   identifiers. Following that convention, Scheme’s
@@ -120,11 +122,6 @@
   numbers in Scheme it could confuse programmers and spell trouble
   for code generators that translate Scheme symbols to other
   languages.</p>
-  <p>Trailing underscores at the end of a number might cause
-  trouble if another syntax extension is made to support units of
-  measure and the name of a unit is allowed to begin with a digit.
-  In the worst case it could be ambiguous where the numerical
-  quantity ends and the unit's name begins.</p>
   <p>Scheme supports a rich numeric tower of integers, ratios, real
   and complex numbers. These come in exact and inexact varieties.
   For real numbers, we have decimal-point and exponent notation.
@@ -140,11 +137,11 @@
   to come up with any concrete examples of present or future tasks
   that would be impeded by this restricted version of the syntax
   extension.</p>
-  <p>As an extra measure we also forbid more than one consecutive
-  underscore. We could not think of any particular situations where
-  repeated underscores cause problems but decided to avoid them
-  anyway. There are enough similar gotchas that caution seems the
-  wise choice.</p>
+  <p>As an extra measure we also forbid trailing underscores, and
+  forbid more than one consecutive underscore. We could not think
+  of any particular situations where repeated underscores cause
+  problems but decided to avoid them anyway. There are enough
+  similar gotchas that caution seems the wise choice.</p>
   <h2>Printing numbers with underscores</h2>
   <p>This SRFI does not specify anything about inserting
   underscores into numbers at print time. Printing with underscores
@@ -162,10 +159,69 @@
   <p>For these reasons, decisions about printing are deferred to
   implementations and to future SRFIs.</p>
   <h1>Specification</h1>
-  <p>We stipulate that conforming implementations must <em>allow
-  one underscore between any two digits, in any part of a
+  <h2>The underscore rule</h2>
+  <p>We stipulate that conforming implementations of this SRFI must
+  <em>allow one underscore between any two digits, in any part of a
   number</em>.</p>
-  <p>The rule <em>includes</em>:</p>
+  <p>For the purpose of this rule, the term <em>digit</em> covers
+  all digits in any radix between 2 and 36 inclusive - not only
+  decimal digits. That means that the letters <code>a-z</code> and
+  <code>A-Z</code> are considered digits (but only in places when
+  the implementation parses that character as a digit).</p>
+  <h2>The rule is necessarily ambiguous and incomplete</h2>
+  <p>We lament that it is impossible to give a precise formal
+  definition of the underscore rule because a typical Scheme
+  implementation does not have a complete formal grammar for its
+  syntax. Even if it did, that grammar could change in new
+  versions.</p>
+  <p>The next section gives what we believe to be a correct and
+  complete extension to the formal grammar of standard Scheme. But
+  since few implementations support the whole standard syntax and
+  nothing but the standard syntax, implementors of this SRFI may
+  encounter situations where their subjective judgment is called
+  for. The subsequent section attempts to help by listing many
+  examples of how the rule is intended to apply in particular
+  situations. Unfortunately that list cannot be exhaustive
+  either.</p>
+  <p>In situations where the letter of this specification does not
+  say anything conclusive, we ask that implementors try to follow
+  its spirit. When in doubt as to whether or not underscores should
+  be supported in a particular part of number syntax, we suggest
+  that implementors <em>not</em> allow them. They can always be
+  allowed later once there is more clarity or consensus.</p>
+  <h2>The rule as applied to R<sup>n</sup>RS</h2>
+  <p>The standard syntax of Scheme is defined in:</p>
+  <ul>
+    <li>R<sup>6</sup>RS section <em>4.2. Lexical syntax</em></li>
+    <li>R<sup>7</sup>RS section <em>7.1. Formal syntax</em></li>
+  </ul>
+  <p>The underscore rule can be implemented as an extension to
+  either standard by adding the following grammar rules to the
+  lexical syntax:</p>
+  <pre>
+⟨digits R⟩       = ⟨digit R⟩+ ⟨more digits R⟩
+⟨more digits R⟩  = ⟨empty⟩ | ⟨one underscore⟩ ⟨digits R⟩
+⟨maybe digits R⟩ = ⟨empty⟩ | ⟨digits R⟩
+⟨one underscore⟩ = _</pre>
+  <p>and then making the following substitutions in existing rules
+  (for all <code>R</code>):</p>
+  <ul>
+    <li>replace all occurrences of <code>⟨digit R⟩+</code> with
+    <code>⟨digits R⟩</code></li>
+    <li>replace all occurrences of <code>⟨digit R⟩*</code> with
+    <code>⟨maybe digits R⟩</code></li>
+  </ul>
+  <p>Note that both standards also define the character classes
+  <code>⟨digit⟩</code> and <code>⟨hex digit⟩</code>. Neither of
+  those should be amended. The <code>⟨digit⟩</code> class is used
+  for identifiers and to help define other character classes. The
+  <code>⟨hex digit⟩</code> class is used to define the backslash
+  escape syntax for inserting characters into strings by their
+  hexadecimal value. This SRFI does not modify the syntax of string
+  escapes, and does not aim to modify the syntax of
+  identifiers.</p>
+  <h2>Implications of the rule</h2>
+  <p>The rule <em>includes</em> at least the following things:</p>
   <ul>
     <li>
       <p>Underscores in numbers of any radix (binary, octal,
@@ -173,8 +229,8 @@
       implementation).</p>
     </li>
     <li>
-      <p>Underscores between letters <code>a-z A-Z</code> that
-      represent digits in a radix higher than 10 (using the
+      <p>Underscores between digits <code>0-9 a-z A-Z</code> when a
+      number is written in a radix higher than 10 (using the
       standard hexadecimal read syntax, or any
       implementation-defined read syntax).</p>
     </li>
@@ -207,7 +263,7 @@
       first zero).</p>
     </li>
   </ul>
-  <p>The rule <em>excludes</em>:</p>
+  <p>The rule <em>excludes</em> at least the following things:</p>
   <ul>
     <li>
       <p>Leading underscores in any group of digits.</p>
@@ -249,12 +305,13 @@
       <code>nan</code> markers.</p>
     </li>
   </ul>
+  <h2>Being lenient about the rule</h2>
   <p>Conforming implementations <em>may</em> be more lenient in
-  what they allow (to maintain compatibility with existing code).
-  In this document, numbers written according to the above rule are
-  called <em>conforming</em>. Other numbers (which may or may not
-  be valid depending on the implementation) are called
-  <em>non-conforming</em>.</p>
+  what they allow (perhaps to maintain compatibility with existing
+  code). In this document, numbers written according to the
+  underscore rule are called <em>conforming</em>. Other numbers
+  (which may or may not be valid depending on the implementation)
+  are called <em>non-conforming</em>.</p>
   <h1>Examples</h1>
   <h2>Integers</h2>
   <pre><code>0123             ; conforming
@@ -332,6 +389,7 @@ _0123.456        ; non-conforming
 #o23_45_67           ; conforming
 #d45_67_89           ; conforming
 #xAB_CD_EF           ; conforming
+#x789_9B_C9_EF       ; conforming
 #x-2_0               ; conforming
 #o+2_345_6           ; conforming
 
@@ -343,148 +401,25 @@ _#x-_2               ; non-conforming
 #i_#o_1234           ; non-conforming
 #e#x1234_            ; non-conforming</code></pre>
   <h1>Implementation</h1>
-  <p>This sample implementation is a portable R<sup>7</sup>RS
-  library. It exports one procedure <code>(read-number)</code>
+  <p>The sample implementation is a portable library that depends
+  only on standard features in the R<sup>7</sup>RS small language.
+  It is available at <code><a href=
+  "https://github.com/scheme-requests-for-implementation/srfi-169">github.com/scheme-requests-for-implementation/srfi-169</a></code>.</p>
+  <p>The library exports one procedure <code>(read-number)</code>
   which takes no arguments. The procedure reads one Scheme number
   from <code>current-input-port</code> with support for optional
-  underscores as specified in this SRFI. It signals an error if
-  underscores are used in a non-conforming way according to the
-  rule stipulated in this SRFI, or if the number syntax (sans
-  underscores) does not conform to the R<sup>7</sup>RS
-  specification.</p>
-  <p>This reader supports most of the R<sup>7</sup>RS numeric tower
-  with the notable exception of complex numbers. The values of
-  inexact numbers may diverge from the values produced by the
-  native reader of a Scheme implementation if it uses different
-  formulas for numeric conversion.</p>
-  <p>The code has been tested against the examples in this SRFI.
-  Correct results were obtained with Chibi-Scheme, Gauche and Kawa.
-  The test harness is available on request.</p>
-  <pre>
-;;; Conditional reading utility
-
-(define (read-char-limit? chars limit)
-  (let ((ch (peek-char)))
-    (let loop ((i 0))
-      (cond ((&gt;= i limit) #f)
-            ((eqv? ch (string-ref chars i)) (read-char) i)
-            (else (loop (+ i 1)))))))
-
-(define (read-char? chars)
-  (read-char-limit? chars (string-length chars)))
-
-;;; Digit span reader
-
-;; All the underscore considerations are in the following procedure,
-;; which reads a span of one or more digits. It returns two values:
-;; the exact nonnegative integer value represented by the digits, and
-;; the count of digits. If there are no digits, those are #f and 0.
-
-(define (read-and-count-digits? radix)
-  (let ((radix (or radix 10))
-        (lodigits "0123456789abcdef")
-        (updigits "0123456789ABCDEF"))
-    (let loop ((was-digit? #f) (count 0) (value #f))
-      (if (read-char? "_")
-          (cond (was-digit? (loop #f count value))
-                (value (error "More than one consecutive underscore"))
-                (else (error "Underscore before digits")))
-          (let ((digit (or (read-char-limit? lodigits radix)
-                           (read-char-limit? updigits radix))))
-            (cond (digit
-                   (loop #t (+ count 1) (+ digit (* radix (or value 0)))))
-                  ((and value (not was-digit?))
-                   (error "Underscore after digits"))
-                  (else (values value count))))))))
-
-(define (read-digits? radix)
-  (let-values (((value _) (read-and-count-digits? radix)))
-    value))
-
-(define (read-fractional-part)
-  (let-values (((value count) (read-and-count-digits? 10)))
-    (inexact (/ (or value 0) (expt 10 count)))))
-
-;;; Scheme number reader
-
-;; The rest of the code covers a large subset of R7RS number syntax.
-;; Complex numbers are regrettably not included. I am not a math
-;; wizard and did not work on any RnRS report so do not trust this
-;; code as an authority on how to do numbers right.
-
-(define (read-prefix? old chars values error-msg)
-  (let ((new (read-char? chars)))
-    (cond ((and old new) (error error-msg))
-          (new (vector-ref values new))
-          (else #f))))
-
-(define (read-radix-prefix? old)
-  (read-prefix? old "bodx" #(2 8 10 16) "More than one radix prefix"))
-
-(define (read-exactness-prefix? old)
-  (read-prefix? old "ei" #(e i) "More than one exactness prefix"))
-
-(define (read-number-prefixes)
-  (let loop ((radix #f) (exactness #f))
-    (if (not (read-char? "#"))
-        (values radix exactness)
-        (let ((new-radix (read-radix-prefix? radix)))
-          (if new-radix
-              (loop new-radix exactness)
-              (let ((new-exactness (read-exactness-prefix? exactness)))
-                (if new-exactness
-                    (loop radix new-exactness)
-                    (error "Unknown # prefix"))))))))
-
-(define (make-decimal integer-part fractional-part exponent-part)
-  (* (+ integer-part fractional-part) (expt 10 (or exponent-part 0))))
-
-(define (read-exponent? radix)
-  (cond ((not (read-char? "e")) #f)
-        (radix (error "Exponent not allowed with radix prefix"))
-        (else (or (read-digits? 10) (error "No exponent")))))
-
-(define (read-decimal-part radix integer-part)
-  (when radix (error "Decimal point not allowed with radix prefix"))
-  (let ((fractional-part (read-fractional-part)))
-    (make-decimal integer-part fractional-part (read-exponent? radix))))
-
-(define (read-ureal? radix)
-  (if (read-char? ".")
-      (read-decimal-part radix 0)
-      (let ((first-digits (read-digits? radix)))
-        (cond ((not first-digits) #f)
-              ((read-char? ".") (read-decimal-part radix first-digits))
-              ((read-char? "/")
-               (let ((other-digits (read-digits? radix)))
-                 (if other-digits
-                     (/ first-digits other-digits)
-                     (error "Missing denominator in ratio"))))
-              (else
-               (make-decimal first-digits 0 (read-exponent? radix)))))))
-
-(define (read-number)
-  (let-values (((radix exactness) (read-number-prefixes)))
-    (let* ((sign (if (read-char? "-") -1 (begin (read-char? "+") 1)))
-           (magnitude (read-ureal? radix)))
-      (unless (eof-object? (peek-char)) (error "Junk after number"))
-      (cond ((and (not magnitude) (or radix exactness))
-             (error "Missing numeric value after # prefix"))
-            ((not magnitude)
-             (error "Missing numeric value"))
-            (else (let ((value (* sign magnitude)))
-                    (case exactness
-                      ((e) (exact value))
-                      ((i) (inexact value))
-                      (else value))))))))
-</pre>
-  <p>The R<sup>7</sup>RS library definition is as follows.</p>
-  <pre>
-(define-library (read-number)
-  (import (scheme base) (scheme inexact) (scheme read) (scheme write))
-  (include "read-number.scm")
-  (export read-number))
-    </pre>
+  underscores. It signals an error if underscores are used in a
+  non-conforming way according to the rule stipulated in this SRFI,
+  or if the number syntax (sans underscores) does not conform to
+  the R<sup>7</sup>RS specification. The reader supports most of
+  the R<sup>7</sup>RS numeric tower with the notable exception of
+  complex numbers. The values of inexact numbers may diverge from
+  the values produced by the native reader of a Scheme
+  implementation if it uses different formulas for numeric
+  conversion.</p>
+  <p>The code was tested against the examples in this SRFI. Correct
+  results were obtained with Chibi-Scheme, Gauche and Kawa. The
+  test harness is included with the implementation.</p>
   <h1>Acknowledgements</h1>
   <p>This SRFI is the result of an impromptu design session on the
   <code>srfi-discuss</code> mailing list over the weekend between
@@ -506,8 +441,8 @@ _#x-_2               ; non-conforming
   JavaScript community. Per explained Kawa's syntax for quaternions
   which led to hypercomplex numbers being supported.</p>
   <p>Shiro Kawai explained the approach of Gauche which can already
-  skip underscores when reading <code>#</code>-prefixed
-  numbers.</p>
+  skip underscores when reading <code>#</code>-prefixed numbers. He
+  suggested extending Scheme's formal grammar.</p>
   <p>Peter Bex cautioned against over-extending Scheme's already
   intricate number syntax and potentially breaking
   backward-compatibility for some programs. John and Lassi
@@ -521,10 +456,11 @@ _#x-_2               ; non-conforming
   identifiers</em> which let implementations break that rule.</p>
   <p>Hugo Hörnquist had the idea of using Scheme's
   <code>display</code> procedure to print numbers with underscores,
-  reserving <code>write</code> for portable syntax. John advised that we
-  postpone any decisions about printing, pointing to Alex Shinn's
-  SRFI 159 and SRFI 166 as potential solutions with a view to the
-  upcoming large edition of the R<sup>7</sup>RS standard.</p>
+  reserving <code>write</code> for portable syntax. John advised
+  that we postpone any decisions about printing, pointing to Alex
+  Shinn's SRFI 159 and SRFI 166 as potential solutions with a view
+  to the upcoming large edition of the R<sup>7</sup>RS
+  standard.</p>
   <h1>Copyright</h1>
   <p>Copyright © Lassi Kortela (2019).</p>
   <p>Permission is hereby granted, free of charge, to any person
