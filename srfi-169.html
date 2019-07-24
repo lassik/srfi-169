@@ -107,7 +107,7 @@
   example, MIT Scheme comes with <code>1+</code> and
   <code>-1+</code> procedures to increment and decrement numbers.
   Several implementations presently parse tokens consisting
-  entirely of digits and underscores as symbols. Some
+  entirely of digits and underscores as identifiers. Some
   implementations, such as Chicken, assume that anything they
   cannot recognize as a number is an identifier.</p>
   <p>Countless languages outside the Lisp family have a convention
@@ -121,7 +121,7 @@
   with an underscore and contain only underscores and digits. Such
   tokens often parse as identifiers. If we made them parse as
   numbers in Scheme it could confuse programmers and spell trouble
-  for code generators that translate Scheme symbols to other
+  for code generators that translate Scheme identifiers to other
   languages.</p>
   <p>Scheme supports a rich numeric tower of integers, ratios, real
   and complex numbers. These come in exact and inexact varieties.
@@ -451,7 +451,7 @@ _#x-_2               ; non-conforming
   as a reasonable precaution. Arthur Gleckler suggested a dedicated
   <code>#_</code> prefix and a user interface feature for text
   editors as two failsafe alternatives.</p>
-  <p>Shiro, Peter and John reminded us that symbols starting with
+  <p>Shiro, Peter and John reminded us that identifiers starting with
   digits are forbidden in Scheme standards since R<sup>4</sup>RS.
   But Jim Rees, Arthur and John brought up <em>peculiar
   identifiers</em> which let implementations break that rule.</p>
