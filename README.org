@@ -1,8 +1,8 @@
-* SRFI 169: Underscores in Numbers
+* SRFI 169: Underscores in numbers
 
 ** by Lassi Kortela
 
-This repository hosts [[https://srfi.schemers.org/srfi-169/][SRFI 169]]: Underscores in Numbers, a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
+This repository hosts [[https://srfi.schemers.org/srfi-169/][SRFI 169]]: Underscores in numbers, a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
 
 This SRFI is in /final/ status.
 
