@@ -4,7 +4,7 @@
 
 
 
-keywords: [[https://srfi.schemers.org/?keywords=syntax][Syntax]]
+keywords: [[https://srfi.schemers.org/?keywords=numbers][Numbers]], [[https://srfi.schemers.org/?keywords=syntax][Syntax]]
 
 This repository hosts [[https://srfi.schemers.org/srfi-169/][SRFI 169]]: Underscores in numbers, a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
 
